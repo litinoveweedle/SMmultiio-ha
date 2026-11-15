@@ -78,6 +78,9 @@ conflicting entities before restarting.
 
 ## configuration.yaml
 
+If an opto input returns an invalid reading, its binary sensor reports `unknown`
+and an error is logged until a valid reading is received.
+
 `configuration.yaml` example:
 ```yaml
 # Loads default set of integrations. Do not remove.
