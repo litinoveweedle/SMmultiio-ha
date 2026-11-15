@@ -3,6 +3,7 @@ LINK = "https://sequentmicrosystems.com/products/multi-io-8-layer-stackable-hat-
 
 
 import multiio
+
 API = multiio.SMmultiio
 DOMAIN = "smmultiio"
 NAME_PREFIX = "mio"
@@ -34,8 +35,8 @@ SM_MAP = {
                     "get": "get_rtd_res",
                 },
                 "icon": {
-                    "on": "mdi:flash-triangle",
-                    "off": "mdi:flash-triangle"
+                    "on": "mdi:omega",
+                    "off": "mdi:omega"
                 },
                 "optional": True
         },
@@ -46,8 +47,8 @@ SM_MAP = {
                     "get": "get_rtd_temp",
                 },
                 "icon": {
-                    "on": "mdi:flash-triangle",
-                    "off": "mdi:flash-triangle"
+                    "on": "mdi:thermometer",
+                    "off": "mdi:thermometer"
                 }
         },
         "iin": {
@@ -57,8 +58,8 @@ SM_MAP = {
                     "get": "get_i_in",
                 },
                 "icon": {
-                    "on": "mdi:flash-triangle",
-                    "off": "mdi:flash-triangle"
+                    "on": "mdi:current-dc",
+                    "off": "mdi:current-dc"
                 }
         },
         "uin": {
@@ -68,8 +69,8 @@ SM_MAP = {
                     "get": "get_u_in",
                 },
                 "icon": {
-                    "on": "mdi:flash-triangle",
-                    "off": "mdi:flash-triangle"
+                    "on": "mdi:flash",
+                    "off": "mdi:flash"
                 }
         },
     },
@@ -109,8 +110,8 @@ SM_MAP = {
                     "set": "set_u_out"
                 },
                 "icon": {
-                    "on": "mdi:flash-triangle",
-                    "off": "mdi:flash-triangle"
+                    "on": "mdi:flash",
+                    "off": "mdi:flash"
                 }
         },
         "iout": {
@@ -139,8 +140,8 @@ SM_MAP = {
                     "set": "set_servo"
                 },
                 "icon": {
-                    "on": "mdi:vector-triangle",
-                    "off": "mdi:vector-triangle"
+                    "on": "mdi:rotate-3d-variant",
+                    "off": "mdi:rotate-3d-variant"
                 }
         },
         "motor": {
@@ -154,8 +155,8 @@ SM_MAP = {
                     "set": "set_motor"
                 },
                 "icon": {
-                    "on": "mdi:vector-triangle",
-                    "off": "mdi:vector-triangle"
+                    "on": "mdi:engine",
+                    "off": "mdi:engine"
                 }
         },
 }

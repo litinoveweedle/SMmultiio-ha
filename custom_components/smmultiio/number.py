@@ -3,22 +3,28 @@ DEFAULT_ICONS = {
         "off": "mdi:numeric-0",
 }
 
+import inspect
 import logging
 import time
 import types
-import inspect
 from inspect import signature
+
 _LOGGER = logging.getLogger(__name__)
 
 from homeassistant.components.number import NumberEntity
 from homeassistant.helpers.entity import generate_entity_id
 
 from . import (
-        DOMAIN, CONF_STACK, CONF_TYPE, CONF_CHAN, CONF_NAME,
-        CONF_UPDATE_INTERVAL,
-        COM_NOGET,
-        SM_MAP, SM_API
+    COM_NOGET,
+    CONF_CHAN,
+    CONF_NAME,
+    CONF_STACK,
+    CONF_TYPE,
+    DOMAIN,
+    SM_API,
+    SM_MAP,
 )
+
 SM_MAP = SM_MAP["number"]
 
 async def async_setup_platform(hass, config, add_devices, discovery_info=None):
@@ -55,9 +61,13 @@ class Number(NumberEntity):
         self._icons = DEFAULT_ICONS | SM_MAP[self._type].get("icon", {})
         self._icon = self._icons["off"]
         self._uom = SM_MAP[self._type].get("uom", "")
-        self._min_value = SM_MAP[self._type]["min_value"]
+        min_value = SM_MAP[self._type]["min_value"]
+        step = SM_MAP[self._type]["step"]
+        if not isinstance(min_value, (int, float)) or not isinstance(step, (int, float)):
+            raise TypeError(f"Invalid numeric metadata for {self._type}")
+        self._min_value = min_value
         self._max_value = SM_MAP[self._type]["max_value"]
-        self._step = SM_MAP[self._type]["step"]
+        self._step = step
         self._value = 0
         self.__SM__init()
         ### __CUSTOM_SETUP__ START

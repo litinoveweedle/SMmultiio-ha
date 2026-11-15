@@ -156,6 +156,9 @@ led_1: -> led_6:  (type: switch)
 relay_1: -> relay_2:  (type: switch)
 ```
 
+Default icons indicate each entity's function; opto inputs, LEDs, and relays
+use different icons for on and off states.
+
 Entity options:
 - `channels: "1,3,5"` (specify a comma-separated list of unique channels; takes precedence over `chan_range`)
 - `chan_range: "start..end"` (specify inclusive channel range)

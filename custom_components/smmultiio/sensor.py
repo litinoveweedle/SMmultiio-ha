@@ -3,22 +3,28 @@ DEFAULT_ICONS = {
         "off": "mdi:numeric-0",
 }
 
+import inspect
 import logging
 import time
 import types
-import inspect
+from datetime import datetime, timedelta
 from inspect import signature
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.entity import generate_entity_id
 from homeassistant.helpers.event import async_track_time_interval
-from datetime import timedelta
 
 from . import (
-        DOMAIN, CONF_STACK, CONF_TYPE, CONF_CHAN, CONF_NAME,
-        CONF_UPDATE_INTERVAL,
-        SM_MAP, SM_API
+    CONF_CHAN,
+    CONF_NAME,
+    CONF_STACK,
+    CONF_TYPE,
+    CONF_UPDATE_INTERVAL,
+    DOMAIN,
+    SM_API,
+    SM_MAP,
 )
+
 SM_MAP = SM_MAP["sensor"]
 
 _LOGGER = logging.getLogger(__name__)
@@ -78,8 +84,11 @@ class Sensor(SensorEntity):
                 self._SM_get = _aux_SM_get
 
     async def async_added_to_hass(self):
+        async def update_state(_now: datetime) -> None:
+            await self.async_update_ha_state(True)
+
         new_hook = async_track_time_interval(
-            self.hass, self.async_update_ha_state, timedelta(seconds=self._update_interval)
+            self.hass, update_state, timedelta(seconds=self._update_interval)
         )
         self._remove_hooks.append(new_hook)
 

@@ -3,23 +3,25 @@ DEFAULT_ICONS = {
         "off": "mdi:toggle-switch-variant-off",
 }
 
+import inspect
 import logging
 import time
 import types
-import inspect
 from inspect import signature
 
-from homeassistant.const import (
-	CONF_NAME
-)
-
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import generate_entity_id
 
 from . import (
-        DOMAIN, CONF_STACK, CONF_TYPE, CONF_CHAN, CONF_NAME,
-        SM_MAP, SM_API
+    CONF_CHAN,
+    CONF_STACK,
+    CONF_TYPE,
+    DOMAIN,
+    SM_API,
+    SM_MAP,
 )
+
 SM_MAP = SM_MAP["switch"]
 
 _LOGGER = logging.getLogger(__name__)

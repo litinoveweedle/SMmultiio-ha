@@ -1,16 +1,15 @@
 """Sequent Microsystems Home Automation Integration"""
 
 import logging
-import voluptuous as vol
 
+import voluptuous as vol
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import entity_registry as er
-from homeassistant.const import (
-	CONF_NAME
-)
 from homeassistant.helpers.discovery import load_platform
 
 from . import data
+
 DOMAIN = data.DOMAIN
 LEGACY_DOMAIN = "SMmultiio"
 NAME_PREFIX = data.NAME_PREFIX
