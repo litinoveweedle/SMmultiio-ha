@@ -8,6 +8,6 @@
 	"dependencies": [],
 	"after_dependencies": [],
 	"codeownders": ["3lv"],
-	"config_flow": false,
-	"requirements": ["SMmultiio>=1.0.0"]
+	"config_flow": true,
+	"requirements": ["SMmultiio>=1.0.0", "sequent-ha-common==0.1.0"]
 }
