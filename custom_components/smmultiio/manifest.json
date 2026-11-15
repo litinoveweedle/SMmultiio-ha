@@ -1,5 +1,5 @@
 {
-	"domain": "SMmultiio",
+	"domain": "smmultiio",
 	"name": "Sequent Microsystems Multi-IO Integration",
 	"version": "1.0.0",
 	"integration_type": "device",

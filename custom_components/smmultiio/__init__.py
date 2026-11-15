@@ -4,6 +4,7 @@ import logging
 import voluptuous as vol
 
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_registry as er
 from homeassistant.const import (
 	CONF_NAME
 )
@@ -11,6 +12,7 @@ from homeassistant.helpers.discovery import load_platform
 
 from . import data
 DOMAIN = data.DOMAIN
+LEGACY_DOMAIN = "SMmultiio"
 NAME_PREFIX = data.NAME_PREFIX
 SM_MAP = data.SM_MAP
 SM_API = data.API
@@ -58,6 +60,20 @@ async def SM_load_all_platforms(hass, stack=0):
 
 
 async def async_setup(hass, config):
+    registry = er.async_get(hass)
+    legacy_entities = [
+        entry for entry in registry.entities.values()
+        if entry.platform == LEGACY_DOMAIN
+    ]
+    for entry in legacy_entities:
+        if registry.async_get_entity_id(entry.domain, DOMAIN, entry.unique_id):
+            raise RuntimeError(
+                f"Cannot migrate {entry.entity_id}: its unique ID already exists "
+                f"under {DOMAIN}"
+            )
+    for entry in legacy_entities:
+        registry.async_update_entity_platform(entry.entity_id, DOMAIN)
+
     hass.data[DOMAIN] = []
     card_configs = config.get(DOMAIN)
     if not card_configs:

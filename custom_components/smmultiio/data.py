@@ -4,7 +4,7 @@ LINK = "https://sequentmicrosystems.com/products/multi-io-8-layer-stackable-hat-
 
 import multiio
 API = multiio.SMmultiio
-DOMAIN = "SMmultiio"
+DOMAIN = "smmultiio"
 NAME_PREFIX = "mio"
 
 SM_MAP = {
