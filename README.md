@@ -13,7 +13,7 @@ seamlessly with Home Assistant, bringing all your custom functionality into the 
 > should be updated and tested together.
 
 For local development, install the shared package into the test Python
-environment with `python -m pip install -e /path/to/sequent-ha-common`.
+environment with `python -m pip install -e /path/to/SMcommon-ha`.
 This does not replace publication for a normal Home Assistant installation.
 
 > If you already have HACS, I2C and File editor configured, you can skip to [The actual installation](#the-actual-installation)
@@ -204,4 +204,7 @@ virtual environment, then run:
 pytest -p no:respx --asyncio-mode=auto -o asyncio_default_fixture_loop_scope=function tests
 ```
 
-The tests simulate the hardware; they do not require a card.
+The tests simulate the hardware and check the installed driver's API signatures;
+they do not require a card. CI builds a wheel from a pinned SMcommon-ha commit
+and verifies it matches this integration's manifest. Update that checkout ref
+when changing the shared dependency.
