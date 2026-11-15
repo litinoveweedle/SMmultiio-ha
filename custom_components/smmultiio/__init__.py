@@ -17,7 +17,6 @@ NAME_PREFIX = data.NAME_PREFIX
 SM_MAP = data.SM_MAP
 SM_API = data.API
 
-CONF_NAME = CONF_NAME
 CONF_STACK = "stack"
 CONF_TYPE = "type"
 CONF_CHAN = "chan"
