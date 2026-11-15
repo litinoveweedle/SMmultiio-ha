@@ -157,5 +157,9 @@ relay_1: -> relay_2:  (type: switch)
 ```
 
 Entity options:
+- `channels: "1,3,5"` (specify a comma-separated list of unique channels; takes precedence over `chan_range`)
 - `chan_range: "start..end"` (specify inclusive channel range)
 - `update_interval: seconds` (specify the update interval for `sensor` and `binary_sensor`, default 30s)
+
+Invalid channel lists and ranges are logged and skipped without loading any
+channels for that entity.

@@ -22,6 +22,7 @@ CONF_STACK = "stack"
 CONF_TYPE = "type"
 CONF_CHAN = "chan"
 CONF_CHAN_RANGE = "chan_range"
+CONF_CHANNELS = "channels"
 CONF_UPDATE_INTERVAL = "update_interval" # In seconds
 COM_NOGET = "__NOGET__"
 
@@ -59,6 +60,17 @@ async def SM_load_all_platforms(hass, stack=0):
                 )
 
 
+def create_entity_config(config, name, stack, type, chan, update_interval):
+    entity_config = {
+            **config,
+            CONF_NAME: NAME_PREFIX + str(stack) + "_" + name,
+            CONF_STACK: stack,
+            CONF_TYPE: type,
+            CONF_CHAN: chan,
+            CONF_UPDATE_INTERVAL: update_interval,
+    }
+    return entity_config
+
 async def async_setup(hass, config):
     registry = er.async_get(hass)
     legacy_entities = [
@@ -86,37 +98,45 @@ async def async_setup(hass, config):
             continue
         for entity in card_config:
             card_config[entity] = card_config[entity] or {}
+            channels = card_config[entity].get(CONF_CHANNELS)
             chan_range = card_config[entity].get(CONF_CHAN_RANGE)
             update_interval = card_config[entity].get(CONF_UPDATE_INTERVAL)
-            try:
-                [chan_start, chan_end] = chan_range.split("..", 1)
-                chan_start = int(chan_start)
-                chan_end = int(chan_end)
-                type = entity
-                for chan in range(chan_start, chan_end + 1, 1):
-                    entity_config = card_config[entity].copy()
-                    entity_config |= {
-                        CONF_NAME: NAME_PREFIX + str(stack) + "_" + entity + "_" + str(chan),
-                        CONF_STACK: stack,
-                        CONF_TYPE: type,
-                        CONF_CHAN: chan,
-                        CONF_UPDATE_INTERVAL: update_interval,
-                    }
-                    await SM_load_platform(hass, entity_config)
-            except:
+            single_channel = channels is None and chan_range is None
+            if channels is not None:
                 try:
-                    [type, chan] = entity.rsplit("_", 1)
-                    chan = int(chan)
-                except:
+                    if not isinstance(channels, str):
+                        raise ValueError("expected a comma-separated string")
+                    channel_numbers = [int(chan) for chan in channels.split(",")]
+                    if len(channel_numbers) != len(set(channel_numbers)):
+                        raise ValueError("duplicate channels")
+                except ValueError as ex:
+                    _LOGGER.error("Invalid channels for %s: %s", entity, ex)
+                    continue
+                type = entity
+            elif chan_range is not None:
+                try:
+                    if not isinstance(chan_range, str):
+                        raise ValueError("expected a start..end string")
+                    chan_start, chan_end = (int(chan) for chan in chan_range.split(".."))
+                    if chan_end < chan_start:
+                        raise ValueError("end must not be less than start")
+                except ValueError as ex:
+                    _LOGGER.error("Invalid chan_range for %s: %s", entity, ex)
+                    continue
+                type = entity
+                channel_numbers = range(chan_start, chan_end + 1)
+            else:
+                try:
+                    type, chan = entity.rsplit("_", 1)
+                    channel_numbers = [int(chan)]
+                except ValueError:
                     _LOGGER.error("%s doesn't respect type_channel format", entity)
                     continue
-                entity_config = card_config[entity].copy()
-                entity_config |= {
-                        CONF_NAME: NAME_PREFIX + str(stack) + "_" + entity,
-                        CONF_STACK: stack,
-                        CONF_TYPE: type,
-                        CONF_CHAN: chan,
-                        CONF_UPDATE_INTERVAL: update_interval,
-                }
+            for chan in channel_numbers:
+                name = entity if single_channel else f"{entity}_{chan}"
+                entity_config = create_entity_config(
+                        card_config[entity], name,
+                        stack, type, chan, update_interval
+                )
                 await SM_load_platform(hass, entity_config)
     return True
