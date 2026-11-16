@@ -7,9 +7,9 @@ seamlessly with Home Assistant, bringing all your custom functionality into the 
 
 ## Installation
 
-> This development version requires `sequent-ha-common==0.0.1`. The
-> shared-package version pins in both Sequent integrations should be updated
-> and tested together.
+> This development version requires `sequent-ha-common==0.0.2`, which must be
+> published before deployment. All installed Sequent integration pins should be
+> updated and tested together.
 
 For local development, install the shared package into the test Python
 environment with `python -m pip install -e /path/to/SMcommon-ha`.
@@ -197,7 +197,7 @@ channels for that entity.
 ## Testing
 
 With Python 3.14, install `pytest-homeassistant==2026.11.1` and `SMmultiio` in a
-virtual environment, along with `sequent-ha-common==0.0.1` from PyPI, then run:
+virtual environment, along with `sequent-ha-common==0.0.2` from PyPI, then run:
 
 ```shell
 pytest -p no:respx --asyncio-mode=auto -o asyncio_default_fixture_loop_scope=function tests
