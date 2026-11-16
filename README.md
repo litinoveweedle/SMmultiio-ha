@@ -7,6 +7,14 @@ seamlessly with Home Assistant, bringing all your custom functionality into the 
 
 ## Installation
 
+> This development version requires `sequent-ha-common==0.0.1`. The
+> shared-package version pins in both Sequent integrations should be updated
+> and tested together.
+
+For local development, install the shared package into the test Python
+environment with `python -m pip install -e /path/to/SMcommon-ha`.
+This does not replace publication for a normal Home Assistant installation.
+
 > If you already have HACS, I2C and File editor configured, you can skip to [The actual installation](#the-actual-installation)
 
 
@@ -42,23 +50,60 @@ seamlessly with Home Assistant, bringing all your custom functionality into the 
     - Repository is `SequentMicrosystems/SMmultiio-ha` and type is `Integration`
     - Once added, you can now search it in HACS menu and download it
 
-5. Add SMmultiio config in configuration.yaml
-    - In the sidebar, select `File editor` and start the add-on
-    - Click the folder icon from the top left corner and edit `configuration.yaml`
-    - At the end of the file append the SMmultiio config:
-        ```yaml
-        SMmultiio:
-        ```
-        > for more information, see [configuration.yaml](#configuration.yaml)
-    - Save the file
+5. Restart Home Assistant, then open **Settings > Devices & services**.
+6. Select **Add integration**, choose **Sequent Microsystems Multi-IO
+   Integration**, and enter the card's stack address. Repeat for each card.
+7. Use **Configure** on each integration entry to choose entities and their
+   update intervals. Entity names and enablement can also be changed on their
+   Home Assistant entity pages.
 
-6. Reboot system
+### Upgrading from the `SMmultiio` domain
 
-7. Reboot system (yes, it must be done twice)
+The integration domain is now lowercase, as required by Home Assistant and
+Marketplace. Back up Home Assistant before upgrading.
+
+1. Uninstall the old `SMmultiio` integration from HACS or Marketplace, then
+   install the updated version. Marketplace may require uninstalling and
+   re-adding the repository when its domain changes.
+2. Ensure the old `custom_components/SMmultiio` directory is gone and the new
+   integration is installed in `custom_components/smmultiio`. Do not keep both.
+3. Change the top-level `SMmultiio:` key in `configuration.yaml` to `smmultiio:`,
+   keeping the existing settings, and restart Home Assistant.
+
+On startup, existing entity registry entries are migrated to the new domain,
+preserving their entity IDs and settings. If conflicting entries already exist
+under `smmultiio`, setup fails rather than overwriting them; resolve the
+conflicting entities before restarting.
+
+### RTC time and synchronization
+
+The card's RTC is now interpreted and written as UTC. Older versions could
+write local time, so after upgrading, set the RTC once using its date/time
+entity in Home Assistant. Enter the correct current local date and time, not
+the potentially incorrect displayed value. Home Assistant converts it to UTC
+when writing the card.
+
+The integration no longer checks internet connectivity or automatically
+overwrites the RTC from the host clock. Use the `datetime.set_value` action
+manually or in an automation when the host clock is known to be correct.
+The configured update interval controls reads only. Invalid RTC data is
+reported as `unknown` until a valid value is read or set.
 
 
 
-## configuration.yaml
+## Migrating from YAML
+
+Back up Home Assistant before upgrading. Existing `smmultiio` YAML configuration
+is imported once, preserving selected channels and their update intervals.
+After the entries appear in **Settings > Devices & services**, remove the
+`smmultiio:` section from `configuration.yaml` and restart Home Assistant.
+Further YAML edits are not imported; make changes using the integration UI.
+If an entry for the same stack already exists, YAML does not overwrite it.
+
+The following legacy examples are retained for reference:
+
+If an opto input returns an invalid reading, its binary sensor reports `unknown`
+and an error is logged until a valid reading is received.
 
 `configuration.yaml` example:
 ```yaml
@@ -73,27 +118,27 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
-SMmultiio:
+smmultiio:
     # + optional configs
 ```
 
 - Simple stack 0 config:
 
 ```yaml
-SMmultiio:
+smmultiio:
 ```
 
 - Specific stack config:
 
 ```yaml
-SMmultiio:
+smmultiio:
     - stack: 2
 ```
 
 - Multiple cards on different stack levels:
 
 ```yaml
-SMmultiio:
+smmultiio:
     - stack: 0
     - stack: 2
     - stack: 3
@@ -104,7 +149,7 @@ SMmultiio:
 > !The following example is provided for illustrative purposes only and does NOT necessarily represent real entities!
 
 ```yaml
-SMmultiio:
+smmultiio:
     - stack: 0
       relay_1:
       relay_3:
@@ -138,6 +183,26 @@ led_1: -> led_6:  (type: switch)
 relay_1: -> relay_2:  (type: switch)
 ```
 
+Default icons indicate each entity's function; opto inputs, LEDs, and relays
+use different icons for on and off states.
+
 Entity options:
+- `channels: "1,3,5"` (specify a comma-separated list of unique channels; takes precedence over `chan_range`)
 - `chan_range: "start..end"` (specify inclusive channel range)
 - `update_interval: seconds` (specify the update interval for `sensor` and `binary_sensor`, default 30s)
+
+Invalid channel lists and ranges are logged and skipped without loading any
+channels for that entity.
+
+## Testing
+
+With Python 3.14, install `pytest-homeassistant==2026.11.1` and `SMmultiio` in a
+virtual environment, along with `sequent-ha-common==0.0.1` from PyPI, then run:
+
+```shell
+pytest -p no:respx --asyncio-mode=auto -o asyncio_default_fixture_loop_scope=function tests
+```
+
+The tests simulate the hardware and check the installed driver's API signatures;
+they do not require a card. CI installs the integration requirements directly
+from PyPI using the versions specified in the manifest.
