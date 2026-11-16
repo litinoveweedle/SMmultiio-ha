@@ -1,13 +1,20 @@
 {
-	"domain": "smmultiio",
-	"name": "Sequent Microsystems Multi-IO Integration",
-	"version": "1.0.0",
-	"integration_type": "device",
-	"documentation": "https://github.com/SequentMicrosystems/SMmultiio-ha",
-	"issue_tracker": "https://github.com/SequentMicrosystems/SMmultiio-ha",
-	"dependencies": [],
-	"after_dependencies": [],
-	"codeownders": ["3lv"],
-	"config_flow": true,
-	"requirements": ["SMmultiio>=1.2.8", "SMcommonHA>=0.0.2"]
+  "domain": "smmultiio",
+  "name": "Sequent Microsystems Multi-IO Integration",
+  "after_dependencies": [],
+  "codeowners": [
+    "@3lv",
+    "litinoveweedle"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/SequentMicrosystems/SMmultiio-ha",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/SequentMicrosystems/SMmultiio-ha",
+  "requirements": [
+    "SMmultiio>=1.2.8",
+    "SMcommonHA>=0.0.3"
+  ],
+  "version": "1.0.0"
 }
