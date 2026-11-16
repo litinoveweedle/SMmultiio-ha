@@ -1,6 +1,6 @@
 """Switches for the card."""
 
-from sequent_ha_common.switch import async_setup_entry as shared_setup
+from SMcommonHA.switch import async_setup_entry as shared_setup
 
 from . import CARD
 

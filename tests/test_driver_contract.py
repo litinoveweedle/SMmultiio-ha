@@ -5,7 +5,7 @@ import inspect
 import pytest
 
 from custom_components.smmultiio.data import API, SM_MAP
-from sequent_ha_common.const import COM_NOGET
+from SMcommonHA.const import COM_NOGET
 
 
 @pytest.mark.parametrize(

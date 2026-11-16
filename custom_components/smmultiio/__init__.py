@@ -1,8 +1,8 @@
 """Sequent Microsystems Multi-IO Integration."""
 
-from sequent_ha_common import Card
-from sequent_ha_common import setup as shared_setup
-from sequent_ha_common.const import (
+from SMcommonHA import Card
+from SMcommonHA import setup as shared_setup
+from SMcommonHA.const import (
     COM_NOGET,
     CONF_CHAN,
     CONF_CHAN_RANGE,

@@ -270,7 +270,7 @@ async def test_empty_yaml_and_optional_entity_selection(hass, hardware, monkeypa
 
 
 def test_yaml_ranges_and_invalid_intervals(hardware):
-    support = importlib.import_module("sequent_ha_common.config_support")
+    support = importlib.import_module("SMcommonHA.config_support")
     card = importlib.import_module(f"custom_components.{DOMAIN}").CARD
     kind = OPTO.rsplit("_", 1)[0]
     imported = support.import_yaml_card(card, {
@@ -298,7 +298,7 @@ async def test_import_multiple_cards(hass, hardware):
 
 
 async def test_hardware_setup_error_retries_platform(hass, hardware):
-    support = importlib.import_module("sequent_ha_common.config_support")
+    support = importlib.import_module("SMcommonHA.config_support")
     card = importlib.import_module(f"custom_components.{DOMAIN}").CARD
     config = support.available_entities(card, 0)[OPTO]
     entry = SimpleNamespace(runtime_data=[config], domain=DOMAIN, entry_id="test")

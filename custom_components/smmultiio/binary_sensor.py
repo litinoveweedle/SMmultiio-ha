@@ -1,6 +1,6 @@
 """Binary sensors for the card."""
 
-from sequent_ha_common.binary_sensor import async_setup_entry as shared_setup
+from SMcommonHA.binary_sensor import async_setup_entry as shared_setup
 
 from . import CARD
 

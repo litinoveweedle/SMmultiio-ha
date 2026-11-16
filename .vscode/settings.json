@@ -1,0 +1,11 @@
+{
+    "python.analysis.extraPaths": ["/home/litin/Documents/GitHub/homeassistant"],
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "../homeassistant;${env:PYTHONPATH}",
+        "PATH": "../homeassistant;${env:PATH}"
+    },
+    "cSpell.words": [
+        "hass",
+        "homeassistant"
+    ]
+}

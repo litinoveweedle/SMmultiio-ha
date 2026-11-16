@@ -1,6 +1,6 @@
 """RTC datetime entities for the card."""
 
-from sequent_ha_common.datetime import async_setup_entry as shared_setup
+from SMcommonHA.datetime import async_setup_entry as shared_setup
 
 from . import CARD
 
