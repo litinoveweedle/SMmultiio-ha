@@ -194,6 +194,17 @@ Entity options:
 Invalid channel lists and ranges are logged and skipped without loading any
 channels for that entity.
 
+## Optional capabilities
+
+Select these entities under **Configure**; existing entity selections are unchanged.
+
+Optional entities include `opto_edge_1..4`, `opto_count_1..4`, `opto_reset_1..4`, `opto_frequency_1..4`, `opto_pwm_1..4`, and `encoder_enable`, `encoder_count`, and `encoder_reset` channels 1..2.
+
+Watchdog entities are `watchdog_reload_1`, `watchdog_count_1`, `watchdog_period_1`,
+and `watchdog_initial_1`.
+
+Watchdog entities are opt-in. Reloading may enable the watchdog; without a reliable reload automation it can power-cycle the Raspberry Pi. Set a suitable initial period for boot time. The integration does not reload it automatically.
+
 ## Testing
 
 With Python 3.14, install `pytest-homeassistant==2026.11.1` and `SMmultiio` in a

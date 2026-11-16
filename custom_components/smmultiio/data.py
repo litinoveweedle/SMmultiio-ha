@@ -9,6 +9,31 @@ DOMAIN = "smmultiio"
 NAME_PREFIX = "mio"
 
 SM_MAP = {
+    "select": {
+        "opto_edge": {
+            "chan_no": 4,
+            "optional": True,
+            "com": {"get": "get_opto_edge", "set": "set_opto_edge"},
+            "option_map": {"None": 0, "Rising": 1, "Falling": 2, "Both": 3},
+        },
+    },
+    "button": {
+        "opto_reset": {
+            "chan_no": 4,
+            "optional": True,
+            "com": {"set": "reset_opto_counter"},
+        },
+        "encoder_reset": {
+            "chan_no": 2,
+            "optional": True,
+            "com": {"set": "reset_opto_encoder_counter"},
+        },
+        "watchdog_reload": {
+            "chan_no": 1,
+            "optional": True,
+            "com": {"set": "wdt_reload"},
+        },
+    },
     "datetime": {
         "rtc": {
             "chan_no": 1,
@@ -34,6 +59,33 @@ SM_MAP = {
         },
     },
     "sensor":  {
+        "opto_count": {
+            "chan_no": 4,
+            "optional": True,
+            "com": {"get": "get_opto_counter"},
+        },
+        "encoder_count": {
+            "chan_no": 2,
+            "optional": True,
+            "com": {"get": "get_opto_encoder_counter"},
+        },
+        "opto_frequency": {
+            "chan_no": 4,
+            "optional": True,
+            "uom": "Hz",
+            "com": {"get": "get_opto_frequency"},
+        },
+        "opto_pwm": {
+            "chan_no": 4,
+            "optional": True,
+            "uom": "%",
+            "com": {"get": "get_opto_pwm_fill"},
+        },
+        "watchdog_count": {
+            "chan_no": 1,
+            "optional": True,
+            "com": {"get": "wdt_get_reset_count"},
+        },
         "rtd_res": {
             "chan_no": 2,
             "uom": "Ohm",
@@ -81,6 +133,11 @@ SM_MAP = {
         },
     },
     "switch": {
+        "encoder_enable": {
+            "chan_no": 2,
+            "optional": True,
+            "com": {"get": "get_opto_encoder_state", "set": "set_opto_encoder_state"},
+        },
         "led": {
             "chan_no": 6,
             "com": {
@@ -105,6 +162,24 @@ SM_MAP = {
         },
     },
     "number": {
+        "watchdog_period": {
+            "chan_no": 1,
+            "optional": True,
+            "uom": "s",
+            "min_value": 1,
+            "max_value": 65535,
+            "step": 1,
+            "com": {"get": "wdt_get_period", "set": "wdt_set_period"},
+        },
+        "watchdog_initial": {
+            "chan_no": 1,
+            "optional": True,
+            "uom": "s",
+            "min_value": 1,
+            "max_value": 65535,
+            "step": 1,
+            "com": {"get": "wdt_get_init_period", "set": "wdt_set_init_period"},
+        },
         "uout": {
             "chan_no": 2,
             "uom": "V",
