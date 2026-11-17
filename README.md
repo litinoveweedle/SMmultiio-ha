@@ -227,6 +227,8 @@ before the draft-release workflow can pass its validation gate.
 
 ## Testing
 
+CI uses Super-Linter to check changed Python and JSON files.
+
 With Python 3.14, install `pytest-homeassistant==2026.11.1` and `SMmultiio` in a
 virtual environment, along with `SMcommonHA>=0.0.3` from PyPI, then run:
 

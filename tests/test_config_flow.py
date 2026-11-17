@@ -90,9 +90,14 @@ async def test_yaml_import_preserves_registry_and_options(hass, hardware):
     assert migrated.config_entry_id == entry.entry_id
     assert migrated.name == "Custom input"
     assert migrated.device_id is not None
-    assert len(device_registry.async_entries_for_config_entry(
-        device_registry.async_get(hass), entry.entry_id
-    )) == 1
+    assert (
+        len(
+            device_registry.async_entries_for_config_entry(
+                device_registry.async_get(hass), entry.entry_id
+            )
+        )
+        == 1
+    )
     assert entry.data["entities"][OPTO]["update_interval"] == 0.1
     assert hass.states.get(legacy.entity_id) is not None
 
@@ -138,7 +143,9 @@ async def test_ui_setup_duplicate_and_unload(hass, hardware, monkeypatch):
     entry = hass.config_entries.async_entries(DOMAIN)[0]
     assert entry.state is config_entries.ConfigEntryState.LOADED
     registry = entity_registry.async_get(hass)
-    entity_id = registry.async_get_entity_id("binary_sensor", DOMAIN, f"binary_sensor.{DOMAIN}1_{OPTO}")
+    entity_id = registry.async_get_entity_id(
+        "binary_sensor", DOMAIN, f"binary_sensor.{DOMAIN}1_{OPTO}"
+    )
     assert entity_id is not None
     assert registry.async_get(entity_id).device_id is not None
     duplicate = await hass.config_entries.flow.async_init(
@@ -151,7 +158,12 @@ async def test_ui_setup_duplicate_and_unload(hass, hardware, monkeypatch):
     assert duplicate["reason"] == "already_configured"
     assert await hass.config_entries.async_unload(entry.entry_id)
     assert await hass.config_entries.async_setup(entry.entry_id)
-    assert registry.async_get_entity_id("binary_sensor", DOMAIN, f"binary_sensor.{DOMAIN}1_{OPTO}") == entity_id
+    assert (
+        registry.async_get_entity_id(
+            "binary_sensor", DOMAIN, f"binary_sensor.{DOMAIN}1_{OPTO}"
+        )
+        == entity_id
+    )
 
 
 async def test_import_of_suffixed_legacy_unique_id(hass, hardware):
@@ -164,7 +176,9 @@ async def test_import_of_suffixed_legacy_unique_id(hass, hardware):
     registry.async_update_entity(
         legacy.entity_id, disabled_by=entity_registry.RegistryEntryDisabler.USER
     )
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: [{"stack": "0", OPTO: None}]})
+    assert await async_setup_component(
+        hass, DOMAIN, {DOMAIN: [{"stack": "0", OPTO: None}]}
+    )
     await hass.async_block_till_done()
     entry = hass.config_entries.async_entries(DOMAIN)[0]
     restored = registry.async_get(legacy.entity_id)
@@ -173,8 +187,14 @@ async def test_import_of_suffixed_legacy_unique_id(hass, hardware):
     assert restored.disabled_by is entity_registry.RegistryEntryDisabler.USER
     assert await hass.config_entries.async_unload(entry.entry_id)
     assert await hass.config_entries.async_setup(entry.entry_id)
-    assert registry.async_get_entity_id("binary_sensor", DOMAIN, old_unique_id) == legacy.entity_id
-    assert registry.async_get_entity_id("binary_sensor", DOMAIN, old_unique_id[:-2]) is None
+    assert (
+        registry.async_get_entity_id("binary_sensor", DOMAIN, old_unique_id)
+        == legacy.entity_id
+    )
+    assert (
+        registry.async_get_entity_id("binary_sensor", DOMAIN, old_unique_id[:-2])
+        is None
+    )
 
 
 async def test_rtc_import_and_manual_setting_in_utc(hass, hardware, monkeypatch):
@@ -216,7 +236,8 @@ async def test_rtc_import_and_manual_setting_in_utc(hass, hardware, monkeypatch)
     assert writes == []
 
     await hass.services.async_call(
-        "datetime", "set_value",
+        "datetime",
+        "set_value",
         {"entity_id": legacy.entity_id, "datetime": "2026-11-15T13:30:00+01:00"},
         blocking=True,
     )
@@ -260,27 +281,36 @@ async def test_empty_yaml_and_optional_entity_selection(hass, hardware, monkeypa
     intervals = {OPTO: 5.0}
     if DOMAIN == "smmultiio":
         intervals["rtd_res_1"] = 6.0
-    options = await hass.config_entries.options.async_configure(options["flow_id"], intervals)
+    options = await hass.config_entries.options.async_configure(
+        options["flow_id"], intervals
+    )
     assert options["type"] is FlowResultType.CREATE_ENTRY
     await hass.async_block_till_done()
     registry = entity_registry.async_get(hass)
     assert registry.async_get_entity_id("switch", DOMAIN, f"switch.{DOMAIN}0_relay_1")
     if DOMAIN == "smmultiio":
-        assert registry.async_get_entity_id("sensor", DOMAIN, "sensor.smmultiio0_rtd_res_1")
+        assert registry.async_get_entity_id(
+            "sensor", DOMAIN, "sensor.smmultiio0_rtd_res_1"
+        )
 
 
 def test_yaml_ranges_and_invalid_intervals(hardware):
     support = importlib.import_module("SMcommonHA.config_support")
     card = importlib.import_module(f"custom_components.{DOMAIN}").CARD
     kind = OPTO.rsplit("_", 1)[0]
-    imported = support.import_yaml_card(card, {
-        "stack": "2",
-        kind: {"channels": "1,3", "update_interval": 0.1},
-        "relay": {"chan_range": "1..2"},
-    })
+    imported = support.import_yaml_card(
+        card,
+        {
+            "stack": "2",
+            kind: {"channels": "1,3", "update_interval": 0.1},
+            "relay": {"chan_range": "1..2"},
+        },
+    )
     assert set(imported["entities"]) == {f"{kind}_1", f"{kind}_3", "relay_1", "relay_2"}
     assert imported["entities"][f"{kind}_3"]["update_interval"] == 0.1
-    assert not support.import_yaml_card(card, {f"{kind}_1": {"update_interval": float("nan")}})["entities"]
+    assert not support.import_yaml_card(
+        card, {f"{kind}_1": {"update_interval": float("nan")}}
+    )["entities"]
 
 
 async def test_import_multiple_cards(hass, hardware):
@@ -307,4 +337,6 @@ async def test_hardware_setup_error_retries_platform(hass, hardware):
         raise OSError("I2C unavailable")
 
     with pytest.raises(PlatformNotReady, match="I2C unavailable"):
-        await support.async_setup_entities(hass, entry, lambda _entities: None, "binary_sensor", fail, card)
+        await support.async_setup_entities(
+            hass, entry, lambda _entities: None, "binary_sensor", fail, card
+        )

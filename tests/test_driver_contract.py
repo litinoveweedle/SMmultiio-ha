@@ -32,7 +32,12 @@ def test_driver_method_accepts_expected_arguments(platform, kind, operation, met
         if len(inspect.signature(function).parameters) == 2:
             args.append(1)
     else:
-        channel_less = kind in {"motor", "watchdog_period", "watchdog_initial", "watchdog_count"}
+        channel_less = kind in {
+            "motor",
+            "watchdog_period",
+            "watchdog_initial",
+            "watchdog_count",
+        }
         if not channel_less:
             args.append(1)
         if operation == "set":
